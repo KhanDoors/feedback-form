@@ -4,6 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,6 +18,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: "center",
     color: theme.palette.text.secondary,
+  },
+  card: {
+    margin: "auto",
+    backgroundColor: "lightGrey",
   },
 }));
 
@@ -42,15 +47,41 @@ const FeedbackForm = () => {
     uploadPhotoButtonText,
   } = values;
 
+  const {
+    REACT_APP_API,
+    REACT_APP_CLOUDNAME,
+    REACT_APP_UPLOADSECRET,
+  } = process.env;
+
   const handleChange = (e) => {
-    // setValues(...values, [])
-    console.log(e);
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // setValues(...values, [])
-    console.log(e);
+    setValues({ ...values, buttonText: "...sending" });
+    console.table({ name, email, phone, message, uploadedFiles });
+    setValues({
+      name: "",
+      email: "",
+      message: "",
+      phone: "",
+      uploadedFiles: [],
+      buttonText: "Submit",
+    });
+  };
+
+  const uploadWidget = () => {
+    window.cloudinary.openUploadWidget(
+      {
+        cloud_name: REACT_APP_CLOUDNAME,
+        upload_preset: REACT_APP_UPLOADSECRET,
+        tags: ["blog"],
+      },
+      function (error, result) {
+        console.log(result);
+      }
+    );
   };
 
   return (
@@ -58,6 +89,21 @@ const FeedbackForm = () => {
       <Typography variant="h1" style={{ textAlign: "center" }} gutterBottom>
         Feedback Form
       </Typography>
+
+      <Card
+        className={classes.card}
+        style={{ height: "20em", width: "90%", textAlign: "center" }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginTop: "150px" }}
+          onClick={() => uploadWidget()}
+        >
+          {uploadPhotoButtonText}
+        </Button>
+      </Card>
+
       <Grid
         container
         direction="column"
@@ -75,7 +121,24 @@ const FeedbackForm = () => {
             <TextField
               className={classes.field}
               type="text"
+              label="Description"
+              multiline
+              rows={8}
+              name="message"
+              value={message}
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              onChange={handleChange}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              className={classes.field}
+              type="text"
               label="Name"
+              name="name"
               value={name}
               fullWidth
               margin="normal"
@@ -89,31 +152,7 @@ const FeedbackForm = () => {
               type="email"
               label="Email Address"
               value={email}
-              fullWidth
-              margin="normal"
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              className={classes.field}
-              type="text"
-              label="Message"
-              multiline
-              value={message}
-              fullWidth
-              margin="normal"
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              className={classes.field}
-              type="text"
-              label="Phone Number"
-              value={phone}
+              name="email"
               fullWidth
               margin="normal"
               onChange={handleChange}
@@ -121,8 +160,22 @@ const FeedbackForm = () => {
             />
           </Grid>
 
-          <Button variant="contained" color="primary" fullWidth>
-            Submit
+          <Grid item xs={12}>
+            <TextField
+              className={classes.field}
+              type="text"
+              label="Phone Number"
+              value={phone}
+              fullWidth
+              name="phone"
+              margin="normal"
+              onChange={handleChange}
+              required
+            />
+          </Grid>
+
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            {buttonText}
           </Button>
         </form>
       </Grid>
