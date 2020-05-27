@@ -79,7 +79,14 @@ const FeedbackForm = () => {
         tags: ["blog"],
       },
       function (error, result) {
-        console.log(result);
+        // console.log(result);
+        setValues({
+          ...values,
+          uploadedFiles: result,
+          uploadPhotoButtonText: `${
+            result ? result.length : 0
+          } Photos Uploaded`,
+        });
       }
     );
   };
