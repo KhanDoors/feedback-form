@@ -2,6 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { emailFeedback } = require("../controllers/feedbackForm");
 
-router.get("/", emailFeedback);
+router.post("/", emailFeedback);
 
 module.exports = router;

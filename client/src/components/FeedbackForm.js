@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,6 +62,17 @@ const FeedbackForm = () => {
     e.preventDefault();
     setValues({ ...values, buttonText: "...sending" });
     console.table({ name, email, phone, message, uploadedFiles });
+    axios({
+      method: "POST",
+      url: `${REACT_APP_API}`,
+      data: { name, email, phone, message, uploadedFiles },
+    })
+      .then((response) => {
+        console.log("feedback", response);
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
     setValues({
       name: "",
       email: "",
