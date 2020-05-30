@@ -6,6 +6,8 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,17 +63,17 @@ const FeedbackForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setValues({ ...values, buttonText: "...sending" });
-    console.table({ name, email, phone, message, uploadedFiles });
+
     axios({
       method: "POST",
       url: `${REACT_APP_API}`,
       data: { name, email, phone, message, uploadedFiles },
     })
       .then((response) => {
-        console.log("feedback", response);
+        if (response.data.success) toast.success("Thanks for the Feedback");
       })
-      .catch((err) => {
-        console.log(err.response);
+      .catch((error) => {
+        if (error.response.data.error) toast.error("Delivery Failed");
       });
     setValues({
       name: "",
@@ -80,6 +82,7 @@ const FeedbackForm = () => {
       phone: "",
       uploadedFiles: [],
       buttonText: "Submit",
+      uploadPhotoButtonText: "Uploaded Files",
     });
   };
 
@@ -198,6 +201,7 @@ const FeedbackForm = () => {
           </Button>
         </form>
       </Grid>
+      <ToastContainer />
     </>
   );
 };
