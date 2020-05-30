@@ -8,7 +8,7 @@ exports.emailFeedback = (req, res) => {
     from: email,
     subject: "Feedback Form",
     html: `
-    <h1>Customer Feddback Form</h1>
+    <h1>Customer Feedback Form</h1>
     <hr />
     <h2>Sender Name: ${name}</h2>
     <h2>Sender Email: ${email}</h2>
